@@ -1,1 +1,843 @@
-# blueland-widget
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Το Προηγούμενο του Αιγαίου — The Aegean Precedent</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=GFS+Didot&family=Cormorant+Garamond:ital,wght@1,500&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg0:#04101c; --bg1:#071c30; --panel:#0a2233; --panel2:#071827;
+  --line:rgba(140,200,230,.16); --ink:#eaf4f7; --dim:#9db4c0;
+  --cyan:#4fd8ea; --cyan2:#8ff0ff; --amber:#e0a35c; --red:#ff5d5d;
+  --ph:#4fd8ea; --e:12;
+  --disp:'GFS Didot','Cormorant Garamond',Georgia,serif;
+  --body:'Source Sans 3','Segoe UI',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--body); color:var(--ink); background:var(--bg0);
+  background-image:
+    radial-gradient(900px 500px at 12% -5%, rgba(79,216,234,.09), transparent 60%),
+    radial-gradient(900px 600px at 95% 105%, rgba(224,163,92,.08), transparent 60%),
+    linear-gradient(180deg,#04101c 0%,#051524 100%);
+  line-height:1.55; overflow-x:hidden;
+}
+.wrap{max-width:1200px;margin:0 auto;padding:0 24px}
+::selection{background:rgba(79,216,234,.35)}
+button{font-family:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+
+/* ---------- header ---------- */
+header{border-bottom:1px solid var(--line);background:rgba(4,16,28,.75);backdrop-filter:blur(8px);position:sticky;top:0;z-index:50}
+.hbar{display:flex;align-items:center;gap:16px;padding:14px 0;flex-wrap:wrap}
+.hflag{width:46px;height:8px;border-radius:2px;flex:none;
+  background:repeating-linear-gradient(90deg,#2e6f9e 0 9px,#cfe9f4 9px 12px,#2e6f9e 12px 23px)}
+.kicker{font-family:var(--mono);font-size:10px;letter-spacing:.22em;color:var(--dim);text-transform:uppercase}
+.htitle{font-family:var(--disp);font-size:clamp(22px,3.4vw,32px);line-height:1.1}
+.hsub{font-size:12.5px;color:var(--dim);max-width:560px}
+.hctl{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.btn{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink);background:transparent;border:1px solid var(--line);border-radius:8px;
+  padding:9px 14px;transition:.25s}
+.btn:hover{border-color:var(--cyan);box-shadow:0 0 18px rgba(79,216,234,.25);color:var(--cyan2)}
+.btn.primary{background:var(--cyan);border-color:var(--cyan);color:#04202c;font-weight:600}
+.btn.primary:hover{background:var(--cyan2);color:#04202c}
+.langpill{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.langpill button{font-family:var(--mono);font-size:11px;letter-spacing:.1em;padding:9px 12px;background:transparent;border:0;color:var(--dim)}
+.langpill button.on{background:var(--cyan);color:#04202c;font-weight:600}
+.forecast{font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;color:#7d95a2;text-align:center;padding:6px 0 10px;text-transform:uppercase}
+
+/* ---------- sections ---------- */
+section{padding:60px 0}
+.shead{margin-bottom:30px}
+.snum{display:inline-block;font-family:var(--mono);font-size:10.5px;letter-spacing:.24em;color:var(--cyan);
+  border:1px solid rgba(79,216,234,.35);border-radius:999px;padding:5px 12px;margin-bottom:14px;text-transform:uppercase}
+.stitle{font-family:var(--disp);font-size:clamp(28px,4vw,42px);line-height:1.12;margin-bottom:10px}
+.ssub{color:var(--dim);max-width:760px;font-size:15.5px}
+.panel{background:linear-gradient(180deg,rgba(10,34,51,.85),rgba(7,24,39,.9));border:1px solid var(--line);border-radius:14px}
+
+/* ---------- S1 duel ---------- */
+.duel{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:stretch}
+.dcard{padding:26px;position:relative;overflow:hidden}
+.dcard h3{font-family:var(--mono);font-size:15px;letter-spacing:.18em;margin:14px 0 2px}
+.dcard .who{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:var(--dim);text-transform:uppercase;margin-bottom:12px}
+.dcard p{font-size:14px;color:#c3d6df}
+.dcard.land{border-color:rgba(224,163,92,.35)} .dcard.land h3{color:var(--amber)}
+.dcard.sea{border-color:rgba(79,216,234,.35)} .dcard.sea h3{color:var(--cyan)}
+.dicon{width:74px;height:48px}
+.dnote{margin-top:18px;padding:14px 20px;border:1px dashed rgba(255,120,90,.4);border-radius:10px;
+  font-size:14.5px;color:#ffd9c9;background:rgba(255,93,94,.06)}
+.dnote b{color:#ffb199;font-family:var(--mono);font-size:12px;letter-spacing:.1em;display:block;margin-bottom:4px}
+.tug{margin-top:26px}
+.tugcap{font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:var(--dim);text-transform:uppercase;margin-bottom:10px;text-align:center}
+.tugtrack{position:relative;height:14px;border-radius:999px;border:1px solid var(--line);
+  background:linear-gradient(90deg,#1d7f96 0%,#2ba3b8 30%,#96805a 65%,#c98a4b 100%)}
+.tugmark{position:absolute;top:-9px;width:4px;height:32px;background:#fff;border-radius:2px;
+  box-shadow:0 0 14px rgba(255,255,255,.8);transform:translateX(-50%);transition:left .12s linear}
+.tugmark::after{content:"";position:absolute;top:-8px;left:50%;transform:translateX(-50%);
+  border:6px solid transparent;border-top-color:#fff}
+.tuglbl{display:flex;justify-content:space-between;margin-top:12px;font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;color:var(--dim)}
+
+/* ---------- S2 lab ---------- */
+.lab{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(300px,1fr);gap:20px;align-items:stretch}
+.frame{position:relative;padding:0;overflow:hidden}
+.frame::before,.frame::after{content:"";position:absolute;width:22px;height:22px;border:2px solid var(--ph);z-index:5;transition:border-color .4s}
+.frame::before{top:10px;left:10px;border-right:0;border-bottom:0}
+.frame::after{bottom:10px;right:10px;border-left:0;border-top:0}
+.maphead{display:flex;justify-content:space-between;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line);
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;color:var(--dim);text-transform:uppercase;flex-wrap:wrap}
+.maphead .live{color:var(--ph);transition:color .4s}
+.mapsvg{display:block;width:100%;height:auto}
+.mapfoot{display:flex;flex-wrap:wrap;gap:14px;padding:12px 16px;border-top:1px solid var(--line);font-size:12px;color:var(--dim)}
+.sw{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.a2chip{position:absolute;top:52px;left:16px;z-index:6;font-family:var(--mono);font-size:10px;letter-spacing:.16em;
+  color:#8ff0ff;border:1px solid rgba(79,216,234,.5);background:rgba(7,24,39,.85);padding:7px 12px;border-radius:8px;
+  opacity:0;transform:translateY(-6px);transition:.4s;pointer-events:none}
+.a2chip.on{opacity:1;transform:none}
+
+.ctl{display:flex;flex-direction:column;gap:16px}
+.statuscard{padding:18px 20px}
+.statuscap{font-family:var(--mono);font-size:10px;letter-spacing:.22em;color:var(--dim);text-transform:uppercase;margin-bottom:8px}
+.phdot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--ph);margin-right:8px;
+  box-shadow:0 0 10px var(--ph);animation:pulse 1.6s infinite;vertical-align:1px;transition:background .4s}
+@keyframes pulse{50%{opacity:.35}}
+#stT{font-family:var(--disp);font-size:24px;color:var(--ph);transition:color .4s;display:inline}
+#stD{font-size:13.5px;color:var(--dim);margin-top:6px}
+
+.slidercard{padding:18px 20px}
+.slidercap{font-family:var(--mono);font-size:10px;letter-spacing:.18em;color:var(--dim);text-transform:uppercase;margin-bottom:14px}
+.erow{display:flex;align-items:baseline;gap:12px;margin-bottom:8px}
+#eread{font-family:var(--mono);font-size:34px;font-weight:600;color:var(--ph);transition:color .4s}
+.erowlbl{font-size:12px;color:var(--dim)}
+input[type=range]{width:100%;appearance:none;-webkit-appearance:none;height:10px;border-radius:999px;border:1px solid var(--line);
+  background:linear-gradient(90deg,#39d6e8 0 15%,#e8d15a 15% 35%,#e0a35c 35% 55%,#ff8a5c 55% 75%,#ff5d5d 75% 100%);cursor:pointer}
+input[type=range]::-webkit-slider-thumb{appearance:none;-webkit-appearance:none;width:26px;height:26px;border-radius:50%;
+  background:#04202c;border:3px solid #fff;box-shadow:0 0 16px rgba(255,255,255,.5);margin-top:0}
+input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:#04202c;border:3px solid #fff}
+.ticks{position:relative;height:30px;margin-top:6px}
+.ticks span{position:absolute;top:0;font-family:var(--mono);font-size:9px;letter-spacing:.08em;color:#7d95a2;text-transform:uppercase;white-space:nowrap;transform:translateX(-2px)}
+.ticks span::before{content:"";display:block;width:1px;height:6px;background:#7d95a2;margin-bottom:3px}
+
+.gauges{padding:18px 20px;display:flex;flex-direction:column;gap:14px}
+.g .gtop{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px}
+.g .gl{font-size:13px;color:#c3d6df}
+.g .gv{font-family:var(--mono);font-size:14px;font-weight:600}
+.g .track{height:8px;border-radius:999px;background:rgba(255,255,255,.07);border:1px solid var(--line);overflow:hidden}
+.g .fill{height:100%;width:0%;border-radius:999px;transition:width .18s linear,background .4s}
+
+/* ---------- SVG map ---------- */
+.isle{fill:url(#landg);stroke:rgba(60,45,20,.5);stroke-width:1}
+.zone{fill:url(#zg)}
+.zring{fill:none;stroke:rgba(143,240,255,.45);stroke-dasharray:3 7;stroke-width:1}
+.zring.warn{stroke:rgba(255,138,92,.7)}
+.ilabel{font-family:var(--mono);font-size:11px;fill:#cfe9f2;opacity:.85;text-anchor:middle;pointer-events:none;letter-spacing:.06em}
+.mlabel{font-family:var(--mono);font-size:13px;fill:#b9d4e0;letter-spacing:.35em;opacity:.8;pointer-events:none}
+.hit{fill:transparent;cursor:crosshair}
+#blob{mix-blend-mode:screen}
+#net path{fill:none;stroke:var(--cyan);stroke-width:1.3;stroke-dasharray:7 7;opacity:.9;animation:dashmove 1.2s linear infinite}
+#net{opacity:0;transition:opacity .6s}
+#net.on{opacity:1}
+@keyframes dashmove{to{stroke-dashoffset:-14}}
+.ping{fill:none;stroke:var(--cyan2);stroke-width:1;opacity:0}
+#net.on .ping{animation:ping 2.4s ease-out infinite}
+@keyframes ping{0%{opacity:.9;r:8}100%{opacity:0;r:34}}
+.wave{stroke:#9fe6f5;fill:none;opacity:.06}
+.w1{animation:drift 26s linear infinite}
+.w2{animation:drift 34s linear infinite reverse}
+@keyframes drift{from{transform:translateX(0)}to{transform:translateX(-500px)}}
+
+/* ---------- S3 cascade ---------- */
+.cas{position:relative;display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+.cas::before{content:"";position:absolute;top:30px;left:4%;right:4%;height:1px;border-top:1px dashed rgba(140,200,230,.3);z-index:0}
+.cnode{position:relative;z-index:1;background:linear-gradient(180deg,rgba(10,34,51,.92),rgba(7,24,39,.95));
+  border:1px solid var(--line);border-radius:12px;padding:16px 14px;cursor:pointer;transition:.35s;overflow:hidden}
+.cnode .n{font-family:var(--mono);font-size:22px;font-weight:600;color:#3d5a6b;transition:.35s}
+.cnode h4{font-size:13.5px;margin:8px 0 6px;line-height:1.3}
+.cnode p{font-size:11.5px;color:var(--dim);line-height:1.45}
+.cnode:hover{transform:translateY(-3px)}
+.cnode.on{border-color:rgba(79,216,234,.6);box-shadow:0 0 22px rgba(79,216,234,.14)}
+.cnode.on .n{color:var(--cyan)}
+.cnode.hot{border-color:rgba(255,93,94,.6);box-shadow:0 0 22px rgba(255,93,94,.16)}
+.cnode.hot .n{color:var(--red)}
+.cnode.blocked{border-color:rgba(92,224,177,.55)}
+.cnode.blocked::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(45deg,rgba(92,224,177,.10) 0 8px,transparent 8px 16px)}
+.cnode.blocked .n{color:#5ce0b1}
+.blkbadge{display:none;position:absolute;top:10px;right:10px;font-family:var(--mono);font-size:8.5px;letter-spacing:.14em;
+  color:#5ce0b1;border:1px solid rgba(92,224,177,.6);padding:3px 6px;border-radius:5px;z-index:2}
+.cnode.blocked .blkbadge{display:block}
+#blkNote{margin-top:16px;font-size:13.5px;color:#9ff0cf;border:1px dashed rgba(92,224,177,.5);border-radius:10px;
+  padding:12px 16px;background:rgba(92,224,177,.06);opacity:0;transform:translateY(6px);transition:.4s}
+#blkNote.on{opacity:1;transform:none}
+
+/* ---------- S4 theatres ---------- */
+.thgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:26px}
+.tcard{position:relative;padding:22px;overflow:hidden;transition:.35s;min-height:230px}
+.tcard .tag{font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:var(--dim);text-transform:uppercase}
+.tcard .actor{display:inline-block;margin:10px 0 14px;font-family:var(--mono);font-size:11px;letter-spacing:.12em;
+  border:1px solid var(--line);border-radius:999px;padding:4px 12px;color:var(--amber)}
+.tcard blockquote{font-family:var(--disp);font-style:italic;font-size:17px;line-height:1.5;color:#dbeaf1}
+.tcard.live{border-color:rgba(255,93,94,.55);box-shadow:0 0 26px rgba(255,93,94,.12)}
+.stamp{position:absolute;top:44%;left:50%;transform:translate(-50%,-50%) rotate(-9deg) scale(1.7);
+  font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:.24em;color:var(--red);
+  border:3px solid var(--red);padding:8px 16px;border-radius:6px;background:rgba(4,16,28,.85);
+  opacity:0;pointer-events:none;white-space:nowrap}
+.tcard.live .stamp{animation:stampin .45s cubic-bezier(.2,1.4,.4,1) forwards}
+@keyframes stampin{to{opacity:.95;transform:translate(-50%,-50%) rotate(-9deg) scale(1)}}
+.s4note{font-size:13px;color:var(--dim);border-left:3px solid var(--line);padding-left:14px;margin-bottom:26px;max-width:820px}
+.ptable{padding:22px}
+.ptitle{font-family:var(--mono);font-size:10.5px;letter-spacing:.24em;color:var(--dim);text-transform:uppercase;margin-bottom:16px;text-align:center}
+.prow{display:grid;grid-template-columns:1fr 46px 1fr;align-items:center;gap:8px;padding:11px 6px;border-top:1px solid var(--line);font-size:14px}
+.prow.head{font-family:var(--mono);font-size:11px;letter-spacing:.18em;color:var(--cyan);border-top:0;text-transform:uppercase}
+.prow .arr{text-align:center;color:var(--amber);font-size:16px}
+.prow div:first-child{text-align:right;color:#c3d6df}
+.prow div:last-child{color:#f0cfa8}
+
+/* ---------- S5 response ---------- */
+.resp{display:grid;grid-template-columns:1.08fr .92fr;gap:20px;align-items:stretch}
+.buls{padding:26px;display:flex;flex-direction:column;gap:14px}
+.bul{display:flex;gap:12px;font-size:14.5px;color:#d5e6ee}
+.bul::before{content:"◆";color:var(--cyan);font-size:11px;margin-top:4px;flex:none}
+.rpanel{padding:26px;display:flex;flex-direction:column;gap:18px}
+.tglrow{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.tgl{position:relative;width:86px;height:38px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.05);transition:.3s;flex:none}
+.tgl .knob{position:absolute;top:4px;left:4px;width:28px;height:28px;border-radius:50%;background:#41606f;transition:.3s}
+.tgl.on{border-color:var(--cyan);box-shadow:0 0 20px rgba(79,216,234,.35);background:rgba(79,216,234,.12)}
+.tgl.on .knob{left:52px;background:var(--cyan);box-shadow:0 0 12px var(--cyan)}
+.tgltxt{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--dim);text-transform:uppercase}
+.tglstate{font-family:var(--mono);font-size:12px;letter-spacing:.2em;color:#7d95a2}
+.tglstate.on{color:var(--cyan2)}
+#fxNote{font-size:13.5px;color:#9ff0cf;background:rgba(92,224,177,.06);border:1px dashed rgba(92,224,177,.4);border-radius:10px;padding:12px 16px;opacity:.35;transition:.4s}
+#fxNote.on{opacity:1}
+.quote{font-family:var(--disp);font-style:italic;font-size:19px;line-height:1.55;border-left:3px solid var(--cyan);padding-left:18px;color:#e8f4f8;margin-top:auto}
+
+/* ---------- footer / misc ---------- */
+footer{border-top:1px solid var(--line);padding:26px 0 40px;margin-top:20px}
+footer p{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:#7d95a2;line-height:1.8;max-width:900px}
+#tip{position:fixed;z-index:99;pointer-events:none;background:rgba(4,18,30,.95);border:1px solid rgba(79,216,234,.5);
+  border-radius:10px;padding:10px 14px;font-size:12.5px;opacity:0;transition:opacity .15s;max-width:230px;box-shadow:0 8px 30px rgba(0,0,0,.5)}
+#tip .tn{font-family:var(--mono);font-size:12px;letter-spacing:.12em;color:var(--cyan2);margin-bottom:4px}
+#tip .tz{color:var(--dim)} #tip b{color:var(--ink)}
+.rv{opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease}
+.rv.in{opacity:1;transform:none}
+
+@media(max-width:980px){
+  .lab,.resp,.duel{grid-template-columns:1fr}
+  .cas{grid-template-columns:repeat(2,1fr)} .cas::before{display:none}
+  .thgrid{grid-template-columns:1fr}
+}
+@media(max-width:720px){.ticks span.tx{display:none}}
+@media(max-width:560px){.cas{grid-template-columns:1fr}.prow{grid-template-columns:1fr 30px 1fr;font-size:12.5px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap hbar">
+    <span class="hflag" aria-hidden="true"></span>
+    <div>
+      <div class="kicker" data-i="kicker"></div>
+      <div class="htitle" data-i="title"></div>
+      <div class="hsub" data-i="subtitle"></div>
+    </div>
+    <div class="hctl">
+      <div class="langpill" role="group" aria-label="Language">
+        <button id="lgGR" class="on">ΕΛ</button><button id="lgEN">EN</button>
+      </div>
+      <button class="btn primary" id="playBtn">▶</button>
+      <button class="btn" id="resetBtn" data-i="reset"></button>
+    </div>
+  </div>
+  <div class="forecast" data-i="notforecast"></div>
+</header>
+
+<main class="wrap">
+
+<!-- S1 · THE DUEL -->
+<section id="s1" class="rv">
+  <div class="shead">
+    <span class="snum" data-i="s1num"></span>
+    <h2 class="stitle" data-i="s1title"></h2>
+    <p class="ssub" data-i="s1sub"></p>
+  </div>
+  <div class="duel">
+    <div class="panel dcard sea">
+      <svg class="dicon" viewBox="0 0 74 48" aria-hidden="true">
+        <path d="M4 34 q9 -7 18 0 q9 7 18 0 q9 -7 18 0 q6 4 12 1" stroke-width="2"/>
+        <path d="M8 42 q9 -7 18 0 q9 7 18 0 q9 -7 18 0" stroke-width="2" opacity=".5"/>
+        <path d="M30 24 L44 24 L40 16 L34 16 Z M37 16 L37 8 M33 12 L41 12" stroke-width="2" fill="none"/>
+      </svg>
+      <h3 data-i="seaT" style="stroke:none"></h3>
+      <div class="who" data-i="seaW"></div>
+      <p data-i="seaD"></p>
+    </div>
+    <div class="panel dcard land">
+      <svg class="dicon" viewBox="0 0 74 48" style="stroke:var(--amber)" aria-hidden="true">
+        <path d="M4 42 L20 18 L30 30 L42 10 L56 26 L70 42 Z" fill="none" stroke-width="2"/>
+        <path d="M42 10 m-8 0 a8 8 0 0 1 16 0 M42 10 m-14 0 a14 14 0 0 1 28 0" fill="none" stroke-width="1.5" opacity=".6"/>
+      </svg>
+      <h3 data-i="landT"></h3>
+      <div class="who" data-i="landW"></div>
+      <p data-i="landD"></p>
+    </div>
+  </div>
+  <div class="dnote"><b data-i="duelNoteT"></b><span data-i="duelNote"></span></div>
+  <div class="tug">
+    <div class="tugcap" data-i="tugCap"></div>
+    <div class="tugtrack"><div class="tugmark" id="tugmark" style="left:12%"></div></div>
+    <div class="tuglbl"><span data-i="tugL"></span><span data-i="tugR"></span></div>
+  </div>
+</section>
+
+<!-- S2 · THE LABORATORY -->
+<section id="s2" class="rv">
+  <div class="shead">
+    <span class="snum" data-i="s2num"></span>
+    <h2 class="stitle" data-i="s2title"></h2>
+    <p class="ssub" data-i="s2sub"></p>
+  </div>
+  <div class="lab">
+    <div class="panel frame" id="mapframe">
+      <div class="maphead">
+        <span data-i="mapTitle"></span>
+        <span><span data-i="mapCoord"></span> · <span class="live" id="maplive">12%</span></span>
+      </div>
+      <div class="a2chip" id="a2chip" data-i="a2adChip"></div>
+      <svg class="mapsvg" viewBox="0 0 1000 660" role="img" aria-label="Aegean scenario map">
+        <defs>
+          <linearGradient id="seag" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#0d3050"/><stop offset="1" stop-color="#071c30"/>
+          </linearGradient>
+          <linearGradient id="landg" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#d8bd8f"/><stop offset="1" stop-color="#b3946a"/>
+          </linearGradient>
+          <radialGradient id="zg">
+            <stop offset="0" stop-color="rgba(80,220,240,.5)"/>
+            <stop offset=".6" stop-color="rgba(80,220,240,.16)"/>
+            <stop offset="1" stop-color="rgba(80,220,240,0)"/>
+          </radialGradient>
+          <radialGradient id="blobg">
+            <stop offset="0" stop-color="rgba(236,178,102,.55)"/>
+            <stop offset=".55" stop-color="rgba(236,178,102,.20)"/>
+            <stop offset="1" stop-color="rgba(236,178,102,0)"/>
+          </radialGradient>
+          <radialGradient id="tintg" cx="88%" cy="48%" r="80%">
+            <stop offset="0" stop-color="rgba(224,163,92,.55)"/>
+            <stop offset="1" stop-color="rgba(224,163,92,0)"/>
+          </radialGradient>
+          <pattern id="grid" width="80" height="80" patternUnits="userSpaceOnUse">
+            <path d="M80 0H0V80" fill="none" stroke="rgba(120,200,255,.06)"/>
+          </pattern>
+        </defs>
+
+        <rect width="1000" height="660" fill="url(#seag)"/>
+        <rect width="1000" height="660" fill="url(#grid)"/>
+        <path class="wave w1" stroke-width="2" d="M-500 190 q62 -14 125 0 t125 0 t125 0 t125 0 t125 0 t125 0 t125 0 t125 0 t125 0 t125 0 t125 0 t125 0 t125 0"/>
+        <path class="wave w2" stroke-width="2" d="M-500 470 q62 -12 125 0 t125 0 t125 0 t125 0 t125 0 t125 0 t125 0 t125 0 t125 0 t125 0 t125 0 t125 0 t125 0"/>
+        <rect id="tint" width="1000" height="660" fill="url(#tintg)" opacity="0"/>
+        <circle id="blob" cx="815" cy="320" r="40" fill="url(#blobg)" opacity="0"/>
+        <path id="arc" d="M705 70 C 610 180, 600 300, 642 382 S 706 512, 762 560" fill="none"
+              stroke="#e8b46a" stroke-width="2" stroke-dasharray="10 8" opacity="0"/>
+
+        <!-- land -->
+        <path class="isle" d="M0 40 L150 28 L235 55 L208 96 L256 122 L224 166 L268 205 L230 252 L262 300 L214 336 L248 386 L190 420 L206 470 L150 506 L0 522 Z"/>
+        <path class="isle" d="M285 60 L330 95 L370 150 L395 215 L378 235 L345 185 L305 130 L272 92 Z"/>
+        <path class="isle" d="M1000 0 L845 0 L852 25 L818 60 L840 110 L800 150 L830 190 L796 235 L836 285 L800 330 L842 380 L806 430 L846 470 L812 520 L858 560 L838 600 L870 640 L1000 640 Z"/>
+        <path class="isle" d="M300 585 L360 575 L430 585 L500 578 L560 592 L545 612 L470 618 L390 610 L318 615 Z"/>
+
+        <g id="dyn"></g>
+        <g id="net">
+          <path d="M430 78 L648 128 L636 252 L676 342 L716 452 L752 524"/>
+          <path d="M676 342 L586 322 L470 360 L430 596"/>
+        </g>
+
+        <text id="mvTxt" class="mlabel" transform="rotate(90 902 130)" x="902" y="130" font-size="14" fill="#e8b46a" opacity="0">ΓΑΛΑΖΙΑ ΠΑΤΡΙΔΑ · MAVİ VATAN</text>
+        <text id="lblGr" class="mlabel" x="60" y="282">ΕΛΛΑΔΑ</text>
+        <text id="lblAn" class="mlabel" transform="rotate(90 952 210)" x="952" y="210">ΑΝΑΤΟΛΙΑ</text>
+        <g opacity=".7" transform="translate(70,585)">
+          <circle r="16" fill="none" stroke="#9db4c0" stroke-width="1"/>
+          <path d="M0 -13 L4 4 L0 0 L-4 4 Z" fill="#9db4c0"/>
+          <text y="-22" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10" fill="#9db4c0">N</text>
+        </g>
+      </svg>
+      <div class="mapfoot" id="legend"></div>
+    </div>
+
+    <div class="ctl">
+      <div class="panel statuscard">
+        <div class="statuscap" data-i="statusCap"></div>
+        <span class="phdot"></span><span id="stT"></span>
+        <p id="stD"></p>
+      </div>
+      <div class="panel slidercard">
+        <div class="slidercap" data-i="sliderCap"></div>
+        <div class="erow"><span id="eread">12%</span><span class="erowlbl" data-i="sliderLbl2"></span></div>
+        <input type="range" id="erange" min="0" max="100" step="1" value="12" aria-label="De facto erosion slider">
+        <div class="ticks">
+          <span style="left:0%">0 · υφιστάμενη κατάσταση</span>
+          <span class="tx" style="left:15%">15</span>
+          <span class="tx" style="left:35%">35</span>
+          <span class="tx" style="left:55%">55</span>
+          <span class="tx" style="left:75%">75</span>
+          <span style="left:92%">100</span>
+        </div>
+      </div>
+      <div class="panel gauges" id="gaugeBox"></div>
+    </div>
+  </div>
+</section>
+
+<!-- S3 · CASCADE -->
+<section id="s3" class="rv">
+  <div class="shead">
+    <span class="snum" data-i="s3num"></span>
+    <h2 class="stitle" data-i="s3title"></h2>
+    <p class="ssub" data-i="s3sub"></p>
+  </div>
+  <div class="cas" id="cascadeGrid"></div>
+  <div id="blkNote" data-i="blocked"></div>
+</section>
+
+<!-- S4 · THEATRES -->
+<section id="s4" class="rv">
+  <div class="shead">
+    <span class="snum" data-i="s4num"></span>
+    <h2 class="stitle" data-i="s4title"></h2>
+    <p class="ssub" data-i="s4sub"></p>
+  </div>
+  <p class="s4note" data-i="s4note"></p>
+  <div class="thgrid" id="theaterGrid"></div>
+  <div class="panel ptable">
+    <div class="ptitle" data-i="tblT"></div>
+    <div class="prow head"><div data-i="tblL"></div><div></div><div data-i="tblR"></div></div>
+    <div id="tblBody"></div>
+  </div>
+</section>
+
+<!-- S5 · RESPONSE -->
+<section id="s5" class="rv">
+  <div class="shead">
+    <span class="snum" data-i="s5num"></span>
+    <h2 class="stitle" data-i="s5title"></h2>
+    <p class="ssub" data-i="s5sub"></p>
+  </div>
+  <div class="resp">
+    <div class="panel buls" id="bulBox"></div>
+    <div class="panel rpanel">
+      <div class="tgltxt" data-i="tgl"></div>
+      <div class="tglrow">
+        <button class="tgl" id="tgl" role="switch" aria-checked="false" aria-label="A2/AD doctrine toggle"><span class="knob"></span></button>
+        <span class="tglstate" id="tglstate">OFF</span>
+      </div>
+      <div id="fxNote" data-i="fxNote"></div>
+      <blockquote class="quote" data-i="quote"></blockquote>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer><div class="wrap"><p data-i="foot"></p></div></footer>
+<div id="tip" role="status"></div>
+
+<script>
+/* ================================================================
+   THE AEGEAN PRECEDENT — editorial scenario engine
+   One master variable (erosion 0–100) drives map, gauges,
+   cascade and global replication. A2/AD toggle = containment path.
+   ================================================================ */
+const L = {
+gr:{
+ kicker:'ΔΙΑΔΡΑΣΤΙΚΗ ΓΕΩΠΟΛΙΤΙΚΗ ΑΝΑΛΥΣΗ · ΜΟΝΤΕΛΟ ΣΕΝΑΡΙΟΥ',
+ title:'Το Προηγούμενο του Αιγαίου',
+ subtitle:'Πώς μια τοπική θαλάσσια διαφορά μπορεί να εξελιχθεί σε δοκιμασία για την ευρύτερη τάξη της θάλασσας. Ένα διαδραστικό εργαλείο βασισμένο στο άρθρο του Καθηγητή ΣΣΕ Κώστα Γρίβα "Η μοίρα των ωκεανών θα κριθεί στο Αιγαίο"',
+ notforecast:'ΜΟΝΤΕΛΟ ΣΕΝΑΡΙΟΥ — ΟΧΙ ΠΡΟΒΛΕΨΗ ΣΥΓΚΡΟΥΣΗΣ',
+ play:'Αναπαραγωγή σεναρίου', pause:'Παύση', reset:'Επαναφορά',
+ s1num:'01 · ΤΟ ΠΛΑΙΣΙΟ', s1title:'Η Σύγκρουση των Παραδειγμάτων',
+ s1sub:'Η χερσαία και η θαλάσσια ισχύς συγκρούονται για το καθεστώς των παρακείμενων θαλασσών: αποτελούν προέκταση της ηπειρωτικής επικράτειας ή τμήμα ενός ενιαίου θαλάσσιου χώρου;',
+ seaT:'ΑΝΟΙΚΤΗ ΘΑΛΑΣΣΑ', seaW:'Ναυτικές δυνάμεις ανοικτής θάλασσας',
+ seaD:'Η ελευθερία των θαλασσών αποτελεί θεμέλιο της διεθνούς τάξης. Από τη Διακήρυξη του Σαντιάγο του 1952 έως την κωδικοποίηση του δικαίου της θάλασσας στη Σύμβαση των Ηνωμένων Εθνών για το Δίκαιο της Θάλασσας, η θάλασσα ρυθμίζεται ως χώρος διαφορετικών δικαιωμάτων, δικαιοδοσιών και ελευθεριών και όχι ως απλή προέκταση της χερσαίας επικράτειας.',
+ landT:'ΓΑΛΑΖΙΑ ΕΠΙΚΡΑΤΕΙΑ', landW:'Χερσαία ισχύς',
+ landD:'Δίκτυα αισθητήρων, αντιπλοϊκοί πύραυλοι, υπερηχητικά όπλα και μη επανδρωμένα συστήματα μπορούν να δημιουργήσουν ζώνες άρνησης πρόσβασης και να περιορίσουν την ελευθερία δράσης ναυτικών δυνάμεων σε εκτεταμένες θαλάσσιες περιοχές. Οι παρακείμενες θάλασσες μπορούν έτσι να αντιμετωπίζονται ως λειτουργική προέκταση της χερσαίας ισχύος.',
+ duelNoteT:'Η ΣΥΓΚΡΟΥΣΗ ΤΩΝ ΔΥΟ ΠΑΡΑΔΕΙΓΜΑΤΩΝ ΚΡΙΝΕΤΑΙ ΣΕ ΔΥΟ ΚΟΜΒΙΚΑ ΘΕΑΤΡΑ:',
+ duelNote:'τις θάλασσες της Ανατολικής Ασίας και τις προεκτάσεις τους στον Ειρηνικό, καθώς και το Αιγαίο.',
+ tugL:'ΑΝΟΙΚΤΗ ΘΑΛΑΣΣΑ', tugR:'ΓΑΛΑΖΙΑ ΕΠΙΚΡΑΤΕΙΑ', tugCap:'Ισορροπία μεταξύ των δύο γεωστρατηγικών παραδειγμάτων',
+ s2num:'02 · ΤΟ ΕΡΓΑΣΤΗΡΙ', s2title:'Το Αιγαίο ως γεωστρατηγικό εργαστήριο',
+ s2sub:'Σύρετε τον δείκτη: όσο η αμφισβήτηση των θαλάσσιων δικαιωμάτων των νησιών παγιώνεται de facto, το αρχιπέλαγος μεταβάλλει τη στρατηγική του λειτουργία και το σχετικό επιχείρημα αποκτά δυνητική εφαρμογή και πέρα από το Αιγαίο.',
+ sliderCap:'DE FACTO ΑΠΟΜΕΙΩΣΗ ΤΩΝ ΘΑΛΑΣΣΙΩΝ ΔΙΚΑΙΩΜΑΤΩΝ ΤΩΝ ΕΛΛΗΝΙΚΩΝ ΝΗΣΙΩΝ',
+ sliderLbl2:'από την αμφισβήτηση προς την έμπρακτη εδραίωση της λογικής της «Γαλάζιας Πατρίδας»',
+ statusCap:'ΚΑΤΑΣΤΑΣΗ ΣΕΝΑΡΙΟΥ',
+ g:['Έκθεση της Ελλάδας σε περιορισμό θαλάσσιων δικαιωμάτων','Γεωστρατηγικός μετασχηματισμός του Αιγαίου','Δυνατότητα αναπαραγωγής του προηγουμένου','Συστημική έκθεση της διεθνούς θαλάσσιας τάξης'],
+ ph:[['STATUS QUO','Η υφιστάμενη στρατηγική αμφισημία παραμένει σε διαχειρίσιμα επίπεδα. Η δυνητική αξία του προηγουμένου παραμένει περιορισμένη.'],
+     ['ΓΚΡΙΖΑ ΖΩΝΗ','Η αμφισβήτηση μετατρέπεται σε επαναλαμβανόμενη πρακτική. Τα νησιά αρχίζουν να αντιμετωπίζονται ως «ειδικές περιπτώσεις» ως προς την έκταση των θαλάσσιων ζωνών που μπορούν να παράγουν.'],
+     ['DE FACTO ΔΙΕΥΘΕΤΗΣΗ','Άτυπη διευθέτηση: νησιά που βρίσκονται κοντά στην απέναντι ηπειρωτική ακτή αντιμετωπίζονται στην πράξη ως σημεία με μειωμένη γεωγραφική επήρεια στη θαλάσσια οριοθέτηση.'],
+     ['ΕΔΡΑΙΩΜΕΝΟ ΠΡΟΗΓΟΥΜΕΝΟ','Η λογική αποκτά πολιτική νομιμοποίηση στο εσωτερικό της συμμαχίας και της ΕΕ και μετατρέπεται σε διαθέσιμο γεωπολιτικό επιχείρημα για άλλες θαλάσσιες διαφορές.'],
+     ['ΓΑΛΑΖΙΑ ΕΠΙΚΡΑΤΕΙΑ','Η αρχή της ελευθερίας της ανοικτής θάλασσας υποχωρεί. Ο θαλάσσιος χώρος κατακερματίζεται σε διαδοχικές ζώνες «γαλάζιας επικράτειας», με ολοένα μεγαλύτερα τμήματα της θάλασσας να αντιμετωπίζονται ως λειτουργικές προεκτάσεις χερσαίας ισχύος.']],
+ legend:['Θάλασσα','Στεριά','Θαλάσσια ζώνη / γεωγραφική επήρεια νησιού νησιού','Χερσαία επιρροή — «Γαλάζια Πατρίδα»','Δίκτυο άρνησης πρόσβασης A2/AD'],
+ mapTitle:'ΑΙΓΑΙΟ · ΘΕΑΤΡΟ ΣΕΝΑΡΙΟΥ', mapCoord:'38.9°N — 25.8°E',
+ zone:'Θαλάσσια ζώνη / γεωγραφική επήρεια νησιού', zstat:['Διατηρείται','Υπό πίεση','Μειούμενη','Σε μεγάλο βαθμό περιορισμένη'],
+ mv:'ΓΑΛΑΖΙΑ ΠΑΤΡΙΔΑ · MAVİ VATAN',
+ a2adChip:'A2/AD ΕΝΕΡΓΟ — ΤΟ ΠΡΟΗΓΟΥΜΕΝΟ ΠΕΡΙΟΡΙΖΕΤΑΙ',
+ s3num:'03 · Η ΑΛΥΣΙΔΑ ΤΗΣ ΜΕΤΑΔΟΣΗΣ', s3title:'Η αλυσίδα διάχυσης του γεωπολιτικού προηγουμένου',
+ s3sub:'Μια τοπική μεταβολή αποκτά ευρύτερη συστημική σημασία μόνο εφόσον το προηγούμενο γίνει πολιτικά αποδεκτό και δυνητικά αναπαραγώγιμο. Επιλέξτε ένα στάδιο για να δείτε πώς μεταβάλλεται η δυναμική.',
+ stages:[['Τοπικό — Αιγαίο','Θαλάσσιες ζώνες, δικαιώματα δικαιοδοσίας και αποτελεσματικός έλεγχος επί των ελληνικών νησιών.'],
+  ['Περιφερειακό — «Γαλάζια επικράτεια»','Οι παρακείμενες θάλασσες αντιμετωπίζονται ολοένα περισσότερο ως λειτουργική προέκταση της χερσαίας ισχύος.'],
+  ['Συμμαχικό — ΝΑΤΟ / ΕΕ','Το προηγούμενο διαμορφώνεται στο εσωτερικό της δυτικής συμμαχίας, με δυνητικές συνέπειες για ένα κράτος-μέλος της.'],
+  ['Στρατηγικό — Ναυτική ισχύς','Ο επιχειρησιακός χώρος και η ελευθερία δράσης των ναυτικών δυνάμεων καθίστανται ολοένα περισσότερο αντικείμενο αμφισβήτησης.'],
+  ['Αναπαραγωγή — Κίνα / Ρωσία','Άλλες δυνάμεις μπορούν να αντλήσουν από το προηγούμενο ένα επιχείρημα που θα μπορούσε να εφαρμοστεί στα δικά τους γεωστρατηγικά θέατρα.'],
+  ['Παγκόσμιο — Θαλάσσια τάξη','Πίεση στην αρχή της ελευθερίας της ανοικτής θάλασσας και στην ελευθερία της ναυσιπλοΐας.']],
+ blocked:'ΑΝΑΧΑΙΤΙΣΗ — Η ικανότητα άρνησης πρόσβασης και περιοχής διακόπτει την αλυσίδα: ο περιορισμός των θαλάσσιων δικαιωμάτων επιβραδύνεται και το προηγούμενο δεν αποκτά εύκολα αναπαραγώγιμη στρατηγική αξία.',
+ s4num:'04 · Η ΔΙΑΧΥΣΗ ΣΤΟ ΔΙΕΘΝΕΣ ΣΥΣΤΗΜΑ', s4title:'Ένα Προηγούμενο, Πολλαπλά Θέατρα',
+ s4sub:'Σε χαμηλή ένταση, το ζήτημα παραμένει κυρίως διμερές. Καθώς όμως μια τέτοια διευθέτηση παγιώνεται, η ίδια λογική μπορεί να προβληθεί ως επιχείρημα και σε άλλα γεωπολιτικά θέατρα.',
+ s4note:'Κρίσιμη διάκριση: ένα προηγούμενο δεν καθορίζει αυτομάτως την έκβαση μιας άλλης διαφοράς. Η σημασία του έγκειται στο επιχείρημα που νομιμοποιεί και στην πολιτική πρακτική που καθιστά διαθέσιμη για αναπαραγωγή.',
+ stamp:'ΔΙΑΘΕΣΙΜΟ ΓΕΩΠΟΛΙΤΙΚΟ ΕΠΙΧΕΙΡΗΜΑ',
+ cards:[['ΔΥΤΙΚΟΣ ΕΙΡΗΝΙΚΟΣ · ΝΟΤΙΑ ΣΙΝΙΚΗ ΘΑΛΑΣΣΑ','Κίνα','««Αν νησιά ή άλλα γεωγραφικά χαρακτηριστικά κοντά σε ηπειρωτικές ακτές χάνουν τη θαλάσσια επήρειά τους στο Αιγαίο, η ίδια λογική θα μπορούσε να προβληθεί και για τα γεωγραφικά χαρακτηριστικά της Νότιας Σινικής Θάλασσας.»»',55],
+        ['ΑΡΚΤΙΚΗ','Ρωσία','««Οι υποθαλάσσιες γεωλογικές δομές αποτελούν φυσική προέκταση της σιβηρικής υφαλοκρηπίδας, με μειωμένη σημασία για τις απέναντι ακτές.»»',70],
+        ['ΑΝΑΔΥΟΜΕΝΕΣ ΑΝΑΘΕΩΡΗΤΙΚΕΣ ΔΙΕΚΔΙΚΗΣΕΙΣ','Πολλαπλοί δρώντες','««Η ΑΟΖ είναι χωρικά ύδατα εν αναμονή. Όπως μετά το Σαντιάγο, τα όρια των θαλάσσιων δικαιωμάτων μπορούν να αναδιατυπωθούν από τους ισχυρότερους.»»',84]],
+ tblT:'ΕΝΝΟΙΟΛΟΓΙΚΗ ΑΝΤΙΣΤΟΙΧΙΑ', tblL:'ΑΙΓΑΙΟ', tblR:'ΔΥΤΙΚΟΣ ΕΙΡΗΝΙΚΟΣ / ΑΡΚΤΙΚΗ',
+ tbl:[['Θαλάσσια επήρεια των νησιών','Επήρεια νησιών / παράκτιων γεωγραφικών σχηματισμών'],
+      ['Εγγύτητα προς ηπειρωτική ακτή','Εγγύτητα προς ηπειρωτική ακτή'],
+      ['De facto συμβιβαστική διευθέτηση','Πιθανή στρατηγική και πολιτική ομαλοποίηση'],
+      ['Προηγούμενο','Διαθέσιμο επιχείρημα σε άλλα θέατρα']],
+ s5num:'05 · Η ΑΝΤΙΔΡΑΣΗ', s5title:'Η άλλη οδός: ανάσχεση μέσω αποτροπής',
+ s5sub:'Σε ένα άναρχο διεθνές σύστημα, η στρατηγική επιβίωση δεν στηρίζεται αποκλειστικά στην επίκληση κανόνων, αλλά και στην αξιόπιστη ικανότητα επιβολής κόστους και άρνησης στον αντίπαλο της δυνατότητας να επιτύχει τους στρατηγικούς του στόχους.',
+ tgl:'ΔΟΓΜΑ ΑΡΝΗΣΗΣ ΠΡΟΣΒΑΣΗΣ ΚΑΙ ΠΕΡΙΟΧΗΣ (A2/AD) ΓΙΑ ΤΟ ΑΡΧΙΠΕΛΑΓΟΣ', tglOff:'ΑΝΕΝΕΡΓΟ', tglOn:'ΕΝΕΡΓΟ',
+ bul:['Τα νησιά ως ενιαίο, διασυνδεδεμένο και ανθεκτικό δίκτυο άρνησης πρόσβασης και περιοχής.',
+      'Μαζικά, χαμηλού κόστους μη επανδρωμένα συστήματα.',
+      'Προηγμένα παράκτια πυραυλικά συστήματα και συστήματα πυροβολικού, υποστηριζόμενα από πολλαπλά δίκτυα αισθητήρων.',
+      'Υπόγειες υποδομές και αποκεντρωμένα δίκτυα διοίκησης και ελέγχου.',
+      'Στρατηγική επικοινωνία: το Αιγαίο ως προκεχωρημένο ανάχωμα για την ελευθερία της ναυσιπλοΐας και των θαλασσών, όχι ως μία ακόμη τοπική διμερής εκκρεμότητα.'],
+ fxNote:'Αποτέλεσμα: ο περιορισμός των θαλάσσιων δικαιωμάτων επιβραδύνεται, η δυνατότητα αναπαραγωγής του προηγουμένου και η συστημική έκθεση περιορίζονται και η αλυσίδα διακόπτεται πριν από το στάδιο της διεθνούς διάχυσης.',
+ quote:'«Η Ελλάδα δεν υπερασπίζεται μόνο τα δικά της κυριαρχικά δικαιώματα. Βρίσκεται σε ένα σημείο όπου συγκρούονται δύο διαφορετικά γεωστρατηγικά παραδείγματα.»',
+ foot:'Το παρόν αποτελεί διαδραστικό εργαλείο βασισμένο στο άρθρο του Καθηγητή ΣΣΕ Κώστα Γρίβα "Η μοίρα των ωκεανών θα κριθεί στο Αιγαίο". Οι δείκτες αποτελούν συντακτικό μοντέλο σεναρίου: αποτυπώνουν σχετική έκθεση και δυναμική δημιουργίας προηγουμένου, όχι μέτρηση του διεθνούς δικαίου, πρόβλεψη πολέμου ή πρόγνωση κρατικής συμπεριφοράς.',
+ mapnames:{gr:'ΕΛΛΑΔΑ',an:'ΑΝΑΤΟΛΙΑ'}
+},
+en:{
+ kicker:'INTERACTIVE GEOPOLITICAL ANALYSIS · SCENARIO MODEL',
+ title:'The Aegean Precedent',
+ subtitle:'How a local maritime dispute could become a test of the wider maritime order. An interactive tool based on the article by Hellenic Military Academy Professor Kostas Grivas, "The fate of the oceans will be decided in the Aegean".',
+ notforecast:'SCENARIO MODEL — NOT A FORECAST OF CONFLICT',
+ play:'Play scenario', pause:'Pause', reset:'Reset',
+ s1num:'01 · THE FRAMEWORK', s1title:'The Battle of Paradigms',
+ s1sub:'Land power and sea power contest the nature of the near seas: an extension of the continent — or part of the ocean?',
+ seaT:'OPEN OCEAN', seaW:'Deep-water naval powers',
+ seaD:'Freedom of the seas as the foundation of international order. From the Santiago Declaration to the 200-mile EEZ, the sea remained a common space — not territory.',
+ landT:'BLUE TERRITORY', landW:'Land-based power',
+ landD:'Meshes of sensors, anti-ship missiles, hypersonic weapons and drones impose military control over vast sea areas. Near seas become “ocean lakes” — a functional extension of the land.',
+ duelNoteT:'THE DUEL WILL BE DECIDED AT TWO POINTS ON THE PLANET:',
+ duelNote:'The seas of China and their Pacific extensions — and the Aegean.',
+ tugL:'OPEN OCEAN', tugR:'BLUE TERRITORY', tugCap:'Balance of the geostrategic paradigm',
+ s2num:'02 · THE LABORATORY', s2title:'The Aegean as Laboratory',
+ s2sub:'Drag the slider: as the contestation of the islands’ maritime rights consolidates de facto, the archipelago changes character — and the argument starts to travel.',
+ sliderCap:'DE FACTO EROSION OF GREEK ISLANDS’ MARITIME RIGHTS',
+ sliderLbl2:'from contestation toward “Blue Homeland”',
+ statusCap:'SCENARIO STATUS',
+ g:['Greece maritime exposure','Aegean transformation','Precedent replicability','Global systemic exposure'],
+ ph:[['STATUS QUO','Existing strategic ambiguity remains contained. The precedent value is limited.'],
+     ['GREY ZONE','Contestation becomes daily practice. Islands start being presented as “special cases”.'],
+     ['DE FACTO ACCOMMODATION','Informal compromise: islands close to the opposite coast acquire reduced maritime significance.'],
+     ['DURABLE PRECEDENT','The logic gains political legitimation inside NATO and the EU — and becomes an available argument.'],
+     ['BLUE TERRITORY','The principle of open seas retreats. Hybrid super-continents of brown and blue “territory”, shrinking oceans.']],
+ legend:['Sea','Land','Island maritime zone','Land influence — “Blue Homeland”','A2/AD denial network'],
+ mapTitle:'AEGEAN · SCENARIO THEATRE', mapCoord:'38.9°N — 25.8°E',
+ zone:'Maritime zone', zstat:['Intact','Under pressure','Eroding','Neutralised'],
+ mv:'BLUE HOMELAND · MAVİ VATAN',
+ a2adChip:'A2/AD ACTIVE — PRECEDENT CONTAINED',
+ s3num:'03 · THE CASCADE', s3title:'The Precedent Cascade',
+ s3sub:'A local change becomes globally significant only if the precedent becomes accepted and replicable. Click any stage to jump.',
+ stages:[['Local — Aegean','Maritime rights and effective control of Greek islands.'],
+  ['Regional — Blue territory','Near seas increasingly treated as an extension of land power.'],
+  ['Alliance — NATO / EU','A precedent formed inside the Western alliance, at the expense of a member state.'],
+  ['Strategic — Naval power','Operating space and freedom of action become contested.'],
+  ['Replication — China / Russia','Other powers find the argument applicable to their own theatres.'],
+  ['Global — Maritime order','Pressure on the principle of open seas and navigational freedom.']],
+ blocked:'INTERDICTION — The A2/AD network breaks the cascade: erosion slows and the precedent does not become replicable.',
+ s4num:'04 · GLOBAL RIPPLE', s4title:'One Precedent, Multiple Theatres',
+ s4sub:'At low intensity the issue remains bilateral. As accommodation becomes durable, the same logic can be invoked elsewhere.',
+ s4note:'Important distinction: a precedent does not automatically determine outcomes in another dispute. Its significance lies in the argument and political practice it makes available.',
+ stamp:'ARGUMENT AVAILABLE',
+ cards:[['W. PACIFIC · SOUTH CHINA SEA','China','“If islands near continental coasts lose their maritime significance in the Aegean, the same logic can apply to the features of the South China Sea.”',55],
+        ['ARCTIC','Russia','“Subsea geological structures are a natural extension of the Siberian shelf — with reduced significance for opposite coasts.”',70],
+        ['EMERGING REVISIONIST CLAIMS','Multiple actors','“The EEZ is territorial waters in waiting. As after Santiago, the limits of the sea are rewritten by the strong.”',84]],
+ tblT:'CONCEPTUAL PARALLEL', tblL:'AEGEAN', tblR:'W. PACIFIC / ARCTIC',
+ tbl:[['Island maritime significance','Island / coastal-feature significance'],
+      ['Continental proximity','Continental proximity'],
+      ['De facto accommodation','Potential strategic normalization'],
+      ['Precedent','Argument available elsewhere']],
+ s5num:'05 · THE RESPONSE', s5title:'The Other Path: Deterrence',
+ s5sub:'In an anarchic international system, strategic survival rests not on invoking abstract law, but on the ability to impose cost.',
+ tgl:'ARCHIPELAGO ACCESS-DENIAL DOCTRINE (A2/AD)', tglOff:'OFF', tglOn:'ON',
+ bul:['The islands as a single, unsinkable access-denial network.',
+      'Mass-produced, low-cost unmanned systems.',
+      'Advanced coastal artillery and multiple sensor meshes.',
+      'Underground infrastructure and decentralized command & control.',
+      'Strategic marketing: the Aegean as the rampart of freedom of the seas — not a local bilateral pending issue.'],
+ fxNote:'Effect: erosion slows, replicability and systemic exposure are capped, the cascade breaks at stage 05.',
+ quote:'“Greece is not only defending its own sovereign rights. It stands at the point where two different geostrategic paradigms collide.”',
+ foot:'An interactive tool based on the article by Hellenic Military Academy Professor Kostas Grivas: "The fate of the oceans will be decided in the Aegean". The indicators are an editorial scenario model: they express relative exposure and precedent potential — not measurements of international law, predictions of war, or forecasts of state behavior.',
+ mapnames:{gr:'GREECE',an:'ANATOLIA'}
+}};
+
+/* ---------- data ---------- */
+const ISLES=[
+ {gr:'Λήμνος', en:'Lemnos', x:430,y:78, r:12, halo:52, t:30, rot:-15},
+ {gr:'Λέσβος', en:'Lesbos', x:648,y:128, r:14, halo:58, t:8, rot:20},
+ {gr:'Χίος', en:'Chios', x:636,y:252, r:12, halo:55, t:14, rot:-10},
+ {gr:'Σάμος', en:'Samos', x:676,y:342, r:11, halo:53, t:11, rot:15},
+ {gr:'Ικαρία', en:'Ikaria', x:586,y:322, r:9, halo:40, t:34, rot:-20},
+ {gr:'Κυκλάδες', en:'Cyclades', x:478,y:362, r:0, halo:48, t:46, cluster:true},
+ {gr:'Κως', en:'Kos', x:716,y:452, r:9, halo:46, t:20, rot:25},
+ {gr:'Ρόδος', en:'Rhodes', x:752,y:524, r:13, halo:56, t:26, rot:-30},
+ {gr:'Κρήτη', en:'Crete', x:430,y:596, r:0, halo:66, t:62, crete:true}
+];
+const CASCADE_TH=[0,18,34,50,64,80];
+const CARD_TH=[55,70,84];
+const PHASE_TH=[0,15,35,55,75];
+const PHASE_COL=['#39d6e8','#e8d15a','#e0a35c','#ff8a5c','#ff5d5d'];
+
+const state={target:12, cur:12, a2ad:false, lang:'gr', playing:false, phase:-1};
+const $=id=>document.getElementById(id);
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+
+/* ---------- build map islands ---------- */
+const dyn=$('dyn');
+function svgEl(n,at){const e=document.createElementNS('http://www.w3.org/2000/svg',n);for(const k in at)e.setAttribute(k,at[k]);return e;}
+ISLES.forEach(s=>{
+  const g=svgEl('g',{});
+  s.haloEl=svgEl('circle',{cx:s.x,cy:s.y,r:s.halo,'class':'zone'});
+  s.ringEl=svgEl('circle',{cx:s.x,cy:s.y,r:s.halo*0.92,'class':'zring'});
+  g.appendChild(s.haloEl); g.appendChild(s.ringEl);
+  if(s.cluster){
+    [[-24,-22],[6,-8],[-16,18],[20,16],[40,-10],[-38,4]].forEach(p=>{
+      g.appendChild(svgEl('circle',{cx:s.x+p[0],cy:s.y+p[1],r:4,'class':'isle'}));
+    });
+  } else if(!s.crete){
+    g.appendChild(svgEl('ellipse',{cx:s.x,cy:s.y,rx:s.r,ry:s.r*0.7,'class':'isle',transform:`rotate(${s.rot} ${s.x} ${s.y})`}));
+  }
+  s.pingEl=svgEl('circle',{cx:s.x,cy:s.y,r:8,'class':'ping'});
+  $('net').appendChild(s.pingEl);
+  s.lblEl=svgEl('text',{x:s.x,y:s.y+(s.crete?-16:s.r+20),'class':'ilabel'});
+  g.appendChild(s.lblEl);
+  const hit=svgEl('circle',{cx:s.x,cy:s.y,r:s.halo+6,'class':'hit'});
+  hit.addEventListener('pointerenter',ev=>showTip(s,ev));
+  hit.addEventListener('pointermove',ev=>moveTip(ev));
+  hit.addEventListener('pointerleave',hideTip);
+  g.appendChild(hit);
+  dyn.appendChild(g);
+});
+
+/* ---------- build dynamic panels ---------- */
+function buildGauges(){
+  const box=$('gaugeBox'); box.innerHTML='';
+  L[state.lang].g.forEach((lb,i)=>{
+    const d=document.createElement('div'); d.className='g';
+    d.innerHTML=`<div class="gtop"><span class="gl">${lb}</span><span class="gv" id="gv${i}">0</span></div><div class="track"><div class="fill" id="gf${i}"></div></div>`;
+    box.appendChild(d);
+  });
+}
+function buildCascade(){
+  const box=$('cascadeGrid'); box.innerHTML='';
+  L[state.lang].stages.forEach((st,i)=>{
+    const d=document.createElement('div'); d.className='cnode'; d.tabIndex=0;
+    d.innerHTML=`<span class="blkbadge">A2/AD</span><div class="n">0${i+1}</div><h4>${st[0]}</h4><p>${st[1]}</p>`;
+    d.addEventListener('click',()=>{setPlaying(false); state.target=clamp(CASCADE_TH[i]+2,0,100); $('erange').value=state.target;});
+    d.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();d.click();}});
+    box.appendChild(d);
+  });
+}
+function buildTheaters(){
+  const box=$('theaterGrid'); box.innerHTML='';
+  L[state.lang].cards.forEach((c,i)=>{
+    const d=document.createElement('div'); d.className='panel tcard'; d.id='tc'+i;
+    d.innerHTML=`<div class="tag">${c[0]}</div><span class="actor">${c[1]}</span><blockquote>${c[2]}</blockquote><div class="stamp">${L[state.lang].stamp}</div>`;
+    box.appendChild(d);
+  });
+}
+function buildTable(){
+  const box=$('tblBody'); box.innerHTML='';
+  L[state.lang].tbl.forEach(r=>{
+    const d=document.createElement('div'); d.className='prow';
+    d.innerHTML=`<div>${r[0]}</div><div class="arr">→</div><div>${r[1]}</div>`;
+    box.appendChild(d);
+  });
+}
+function buildBuls(){
+  const box=$('bulBox'); box.innerHTML='';
+  L[state.lang].bul.forEach(b=>{const d=document.createElement('div');d.className='bul';d.textContent=b;box.appendChild(d);});
+}
+function buildLegend(){
+  const cols=['#0d3050','#cbb086','rgba(80,220,240,.55)','rgba(224,163,92,.8)','#4fd8ea'];
+  $('legend').innerHTML=L[state.lang].legend.map((l,i)=>`<span><span class="sw" style="background:${cols[i]}"></span>${l}</span>`).join('');
+}
+
+/* ---------- language ---------- */
+function applyLang(){
+  const d=L[state.lang];
+  document.querySelectorAll('[data-i]').forEach(el=>{
+    const k=el.getAttribute('data-i');
+    if(d[k]!==undefined && typeof d[k]==='string') el.textContent=d[k];
+  });
+  document.documentElement.lang = state.lang==='gr'?'el':'en';
+  $('lgGR').classList.toggle('on',state.lang==='gr');
+  $('lgEN').classList.toggle('on',state.lang==='en');
+  $('tglstate').textContent = state.a2ad?d.tglOn:d.tglOff;
+  $('playBtn').textContent = state.playing?'⏸':'▶';
+  $('playBtn').setAttribute('aria-label', state.playing?d.pause:d.play);
+  $('lblGr').textContent=d.mapnames.gr; $('lblAn').textContent=d.mapnames.an;
+  $('mvTxt').textContent=d.mv;
+  ISLES.forEach(s=>s.lblEl.textContent=s[state.lang]);
+  buildGauges(); buildCascade(); buildTheaters(); buildTable(); buildBuls(); buildLegend();
+  state.phase=-1; // force status refresh
+}
+
+/* ---------- scores ---------- */
+function scores(e,a2){
+  let g1=6+e, g2=e, g3=e*0.667;
+  let g4 = e<=40 ? e*0.4167 : 16.67+(e-40)*1.4;
+  if(a2){ g2*=0.62; g3=Math.min(g3,30); g4=Math.min(g4,22); }
+  return [g1,g2,g3,g4].map(v=>Math.round(clamp(v,0,100)));
+}
+function scoreColor(v){return v<35?'#4fd8ea':v<70?'#e0a35c':'#ff5d5d';}
+
+/* ---------- master update ---------- */
+function phaseOf(e){let p=0;PHASE_TH.forEach((t,i)=>{if(e>=t)p=i;});return p;}
+
+function update(e){
+  const a2=state.a2ad, p=phaseOf(e), col=PHASE_COL[p];
+  document.documentElement.style.setProperty('--ph',col);
+  document.documentElement.style.setProperty('--e',e);
+
+  // readouts
+  $('eread').textContent=Math.round(e)+'%';
+  $('maplive').textContent=Math.round(e)+'%';
+  $('tugmark').style.left=clamp(e,1,99)+'%';
+
+  // status
+  if(p!==state.phase){
+    state.phase=p;
+    $('stT').textContent=L[state.lang].ph[p][0];
+    $('stD').textContent=L[state.lang].ph[p][1];
+  }
+
+  // map elements
+  const blob=$('blob');
+  blob.setAttribute('r',40+e*3.7);
+  blob.setAttribute('opacity', e<=1?0:Math.min(.9,.12+e*.009));
+  $('tint').setAttribute('opacity',(e/100*.55).toFixed(3));
+  const arcOp=clamp((e-15)/25,0,.85); $('arc').setAttribute('opacity',arcOp);
+  $('mvTxt').setAttribute('opacity',clamp((e-10)/20,0,.9));
+
+  // islands
+  ISLES.forEach(s=>{
+    let er=clamp((e-s.t)/(95-s.t),0,1);
+    if(a2) er*=0.45;
+    const sc=1-er*0.85;
+    s._s=sc;
+    s.haloEl.setAttribute('r',Math.max(6,s.halo*sc));
+    s.ringEl.setAttribute('r',Math.max(5,s.halo*sc*0.92));
+    const op = a2 ? Math.max(.5,.85-er*.4) : Math.max(.28,.85-er*.5);
+    s.haloEl.setAttribute('opacity',op.toFixed(2));
+    s.ringEl.setAttribute('opacity',op.toFixed(2));
+    s.ringEl.classList.toggle('warn', sc<0.5);
+  });
+
+  // gauges
+  const sc=scores(e,a2);
+  sc.forEach((v,i)=>{
+    const f=$('gf'+i), t=$('gv'+i);
+    if(f){f.style.width=v+'%'; f.style.background=scoreColor(v); f.style.boxShadow='0 0 10px '+scoreColor(v)+'66';}
+    if(t){t.textContent=v; t.style.color=scoreColor(v);}
+  });
+
+  // cascade
+  document.querySelectorAll('.cnode').forEach((n,i)=>{
+    const on=e>=CASCADE_TH[i];
+    const blocked=a2&&i>=4;
+    n.classList.toggle('on',on&&!blocked);
+    n.classList.toggle('hot',on&&!a2&&i>=4);
+    n.classList.toggle('blocked',on&&blocked);
+  });
+  $('blkNote').classList.toggle('on',a2);
+  $('a2chip').classList.toggle('on',a2);
+  $('net').classList.toggle('on',a2);
+
+  // theatres
+  CARD_TH.forEach((th,i)=>{
+    const eff=th+(a2?20:0);
+    $('tc'+i).classList.toggle('live', e>=eff);
+  });
+}
+
+/* ---------- tooltip ---------- */
+const tip=$('tip');
+function showTip(s,ev){
+  const d=L[state.lang], sc=s._s||1, pct=Math.round(sc*100);
+  const st = sc>0.85?d.zstat[0]:sc>0.6?d.zstat[1]:sc>0.3?d.zstat[2]:d.zstat[3];
+  tip.innerHTML=`<div class="tn">${s[state.lang].toUpperCase()}</div><div class="tz">${d.zone}: <b>${pct}%</b> — ${st}</div>`;
+  tip.style.opacity=1; moveTip(ev);
+}
+function moveTip(ev){
+  const x=Math.min(ev.clientX+16,window.innerWidth-240);
+  tip.style.left=x+'px'; tip.style.top=(ev.clientY+16)+'px';
+}
+function hideTip(){tip.style.opacity=0;}
+
+/* ---------- controls ---------- */
+const erange=$('erange');
+erange.addEventListener('input',()=>{setPlaying(false); state.target=+erange.value;});
+$('resetBtn').addEventListener('click',()=>{setPlaying(false); state.target=12; erange.value=12;});
+
+function setPlaying(v){
+  state.playing=v;
+  $('playBtn').textContent=v?'⏸':'▶';
+  $('playBtn').setAttribute('aria-label', v?L[state.lang].pause:L[state.lang].play);
+}
+$('playBtn').addEventListener('click',()=>{
+  if(state.playing){setPlaying(false);return;}
+  if(state.target>=100){state.target=0;erange.value=0;}
+  setPlaying(true);
+});
+
+$('tgl').addEventListener('click',()=>{
+  state.a2ad=!state.a2ad;
+  $('tgl').classList.toggle('on',state.a2ad);
+  $('tgl').setAttribute('aria-checked',state.a2ad);
+  $('tglstate').textContent=state.a2ad?L[state.lang].tglOn:L[state.lang].tglOff;
+  $('tglstate').classList.toggle('on',state.a2ad);
+  $('fxNote').classList.toggle('on',state.a2ad);
+});
+
+$('lgGR').addEventListener('click',()=>{state.lang='gr';applyLang();});
+$('lgEN').addEventListener('click',()=>{state.lang='en';applyLang();});
+
+/* ---------- animation loop ---------- */
+let last=performance.now();
+function loop(ts){
+  const dt=Math.min(50,ts-last)/1000; last=ts;
+  if(state.playing){
+    state.target=clamp(state.target+dt*8,0,100);
+    erange.value=state.target;
+    if(state.target>=100) setPlaying(false);
+  }
+  const diff=state.target-state.cur;
+  if(Math.abs(diff)>0.03) state.cur+=diff*Math.min(1,dt*7);
+  else state.cur=state.target;
+  update(state.cur);
+  requestAnimationFrame(loop);
+}
+
+/* ---------- reveal on scroll ---------- */
+const io=new IntersectionObserver(es=>es.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target);}}),{threshold:.12});
+document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+
+/* ---------- init ---------- */
+applyLang();
+update(state.cur);
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
