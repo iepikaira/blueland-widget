@@ -217,6 +217,9 @@ input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;bac
 /* ---------- footer / misc ---------- */
 footer{border-top:1px solid var(--line);padding:26px 0 40px;margin-top:20px}
 footer p{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:#7d95a2;line-height:1.8;max-width:900px}
+.source-link{display:inline-block;margin-top:10px;color:var(--cyan2);text-decoration:none;border-bottom:1px solid rgba(143,240,255,.35);transition:.25s}
+.source-link:hover{color:#fff;border-bottom-color:var(--cyan)}
+.credits{margin-top:12px}
 #tip{position:fixed;z-index:99;pointer-events:none;background:rgba(4,18,30,.95);border:1px solid rgba(79,216,234,.5);
   border-radius:10px;padding:10px 14px;font-size:12.5px;opacity:0;transition:opacity .15s;max-width:230px;box-shadow:0 8px 30px rgba(0,0,0,.5)}
 #tip .tn{font-family:var(--mono);font-size:12px;letter-spacing:.12em;color:var(--cyan2);margin-bottom:4px}
@@ -243,6 +246,7 @@ footer p{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:#7d95
       <div class="kicker" data-i="kicker"></div>
       <div class="htitle" data-i="title"></div>
       <div class="hsub" data-i="subtitle"></div>
+<a class="source-link" data-i="sourceLink" href="https://slpress.gr/amyna/i-moira-ton-okeanon-tha-krithei-sto-aigaio/" target="_blank" rel="noopener noreferrer"></a>
     </div>
     <div class="hctl">
       <div class="langpill" role="group" aria-label="Language">
@@ -441,7 +445,11 @@ footer p{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:#7d95
 
 </main>
 
-<footer><div class="wrap"><p data-i="foot"></p></div></footer>
+<footer><div class="wrap">
+  <p data-i="foot"></p>
+  <a class="source-link" data-i="sourceLink" href="https://slpress.gr/amyna/i-moira-ton-okeanon-tha-krithei-sto-aigaio/" target="_blank" rel="noopener noreferrer"></a>
+  <p class="credits">Powered by iEp Widgets © [2026].</p>
+</div></footer>
 <div id="tip" role="status"></div>
 
 <script>
@@ -454,7 +462,7 @@ const L = {
 gr:{
  kicker:'ΔΙΑΔΡΑΣΤΙΚΗ ΓΕΩΠΟΛΙΤΙΚΗ ΑΝΑΛΥΣΗ · ΜΟΝΤΕΛΟ ΣΕΝΑΡΙΟΥ',
  title:'Το Προηγούμενο του Αιγαίου',
- subtitle:'Πώς μια τοπική θαλάσσια διαφορά μπορεί να εξελιχθεί σε δοκιμασία για την ευρύτερη τάξη της θάλασσας. Ένα διαδραστικό εργαλείο βασισμένο στο άρθρο του Καθηγητή ΣΣΕ Κώστα Γρίβα "Η μοίρα των ωκεανών θα κριθεί στο Αιγαίο"',
+ subtitle:'Πώς μια τοπική θαλάσσια διαφορά μπορεί να εξελιχθεί σε δοκιμασία για την ευρύτερη τάξη της θάλασσας. Ένα διαδραστικό εργαλείο βασισμένο στο άρθρο του Καθηγητή ΣΣΕ Κώστα Γρίβα: ',
  notforecast:'ΜΟΝΤΕΛΟ ΣΕΝΑΡΙΟΥ — ΟΧΙ ΠΡΟΒΛΕΨΗ ΣΥΓΚΡΟΥΣΗΣ',
  play:'Αναπαραγωγή σεναρίου', pause:'Παύση', reset:'Επαναφορά',
  s1num:'01 · ΤΟ ΠΛΑΙΣΙΟ', s1title:'Η Σύγκρουση των Παραδειγμάτων',
@@ -514,12 +522,13 @@ gr:{
  fxNote:'Αποτέλεσμα: ο περιορισμός των θαλάσσιων δικαιωμάτων επιβραδύνεται, η δυνατότητα αναπαραγωγής του προηγουμένου και η συστημική έκθεση περιορίζονται και η αλυσίδα διακόπτεται πριν από το στάδιο της διεθνούς διάχυσης.',
  quote:'«Η Ελλάδα δεν υπερασπίζεται μόνο τα δικά της κυριαρχικά δικαιώματα. Βρίσκεται σε ένα σημείο όπου συγκρούονται δύο διαφορετικά γεωστρατηγικά παραδείγματα.»',
  foot:'Το παρόν αποτελεί διαδραστικό εργαλείο βασισμένο στο άρθρο του Καθηγητή ΣΣΕ Κώστα Γρίβα "Η μοίρα των ωκεανών θα κριθεί στο Αιγαίο". Οι δείκτες αποτελούν συντακτικό μοντέλο σεναρίου: αποτυπώνουν σχετική έκθεση και δυναμική δημιουργίας προηγουμένου, όχι μέτρηση του διεθνούς δικαίου, πρόβλεψη πολέμου ή πρόγνωση κρατικής συμπεριφοράς.',
+  sourceLink:'Κώστας Γρίβας — «Η μοίρα των ωκεανών θα κριθεί στο Αιγαίο» · SLpress.gr',
  mapnames:{gr:'ΕΛΛΑΔΑ',an:'ΑΝΑΤΟΛΙΑ'}
 },
 en:{
  kicker:'INTERACTIVE GEOPOLITICAL ANALYSIS · SCENARIO MODEL',
  title:'The Aegean Precedent',
- subtitle:'How a local maritime dispute could become a test of the wider maritime order. An interactive tool based on the article by Hellenic Military Academy Professor Kostas Grivas, "The fate of the oceans will be decided in the Aegean".',
+ subtitle:'How a local maritime dispute could become a test of the wider maritime order. An interactive tool based on the article by Hellenic Military Academy Professor Kostas Grivas: ',
  notforecast:'SCENARIO MODEL — NOT A FORECAST OF CONFLICT',
  play:'Play scenario', pause:'Pause', reset:'Reset',
  s1num:'01 · THE FRAMEWORK', s1title:'The Battle of Paradigms',
@@ -579,6 +588,7 @@ en:{
  fxNote:'Effect: erosion slows, replicability and systemic exposure are capped, the cascade breaks at stage 05.',
  quote:'“Greece is not only defending its own sovereign rights. It stands at the point where two different geostrategic paradigms collide.”',
  foot:'An interactive tool based on the article by Hellenic Military Academy Professor Kostas Grivas: "The fate of the oceans will be decided in the Aegean". The indicators are an editorial scenario model: they express relative exposure and precedent potential — not measurements of international law, predictions of war, or forecasts of state behavior.',
+  sourceLink:'Kostas Grivas — “The fate of the oceans will be decided in the Aegean” · SLpress.gr',
  mapnames:{gr:'GREECE',an:'ANATOLIA'}
 }};
 
